@@ -1,0 +1,9 @@
+<!doctype html>
+
+<title>Project Issues from {{repo}} </title>
+
+<ul>
+{% for issue in issues %}
+<li> <a href="{{issue.html_url}}"> {{issue.title}} </a> </li>
+{% endfor %}
+</ul>
