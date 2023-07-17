@@ -2,8 +2,19 @@
 
 <title>Project Issues from {{repo}} </title>
 
-<ul>
+<h1> Open Issues from {{repo}} </h1>
+
+<div>
 {% for issue in issues %}
-<li> <a href="{{issue.html_url}}"> {{issue.title}} </a> </li>
+<div>{{issue.number}} <a href="{{issue.url}}"> {{issue.title}} </a> </div>
 {% endfor %}
-</ul>
+</div>
+
+{% if page_info.has_previous_page is true %}
+<a href="/{{owner}}/{{repo}}?cursor={{page_info.start_cursor}}&prev=True">Prev</a>
+|
+{% endif %}
+
+{% if  page_info.has_next_page is true %}
+<a href="/{{owner}}/{{repo}}?cursor={{page_info.end_cursor}}">Next</a>
+{% endif %}
