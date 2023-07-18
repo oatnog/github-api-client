@@ -1,15 +1,23 @@
 <!doctype html>
 
+<head>
+    <link 
+        rel="stylesheet" 
+        type="text/css" 
+        href="{{ url_for('static', filename='issues.css') }}" 
+    />
+
 <title>Project Issues from {{repo}} </title>
 
 <h1> Open Issues from {{repo}} </h1>
 
-<div>
+<ul>
 {% for issue in issues %}
-<div>{{issue.number}} <a href="{{issue.url}}"> {{issue.title}} </a> </div>
+<li>{{issue.number}} <a href="{{issue.url}}"> {{issue.title}} </a> </li>
 {% endfor %}
-</div>
+</ul>
 
+<div class="prevnext">
 {% if page_info.has_previous_page is true %}
 <a href="/{{owner}}/{{repo}}?cursor={{page_info.start_cursor}}&prev=True">Prev</a>
 |
@@ -18,3 +26,4 @@
 {% if  page_info.has_next_page is true %}
 <a href="/{{owner}}/{{repo}}?cursor={{page_info.end_cursor}}">Next</a>
 {% endif %}
+</div>

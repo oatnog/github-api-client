@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "flask-graphql"
+version = "0.1.0"
+description = "Implement Railway's Support Engineer task using Flask and GraphQL"
+authors = ["Allan Anderson <rubel@goosemoon.org>"]
+readme = "README.md"
+packages = [{include = "flask_graphql"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Flask = "^2.3.2"
+sgqlc = "^16.3"
+requests = "^2.31.0"
+python-dotenv = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+blue = "^0.9.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,11 +1,17 @@
+from os import getenv
+
+from dotenv import load_dotenv
+
 from flask import Flask, request, render_template
 #import requests
-from os import getenv
+
 from sgqlc.operation import Operation
 from sgqlc.endpoint.requests import RequestsEndpoint
 
 from ghschema import ghschema
 
+load_dotenv()
+ITEMS_PER_REQUEST = 30
 
 app = Flask(__name__)
 
@@ -13,6 +19,12 @@ app = Flask(__name__)
 @app.route('/<owner>/<name>')
 def gh_issues(owner, name):
     GH_API_TOKEN = getenv('GH_API_TOKEN')
+    if not GH_API_TOKEN:
+        return render_template(
+            'issues.html',
+            owner=owner,
+            repo=name,
+        )
     #OWNER = 'sveltejs'
     #REPO = 'kit'
 
@@ -20,11 +32,11 @@ def gh_issues(owner, name):
     print(request.args)
     if 'cursor' in request.args:
         if 'prev' in request.args:
-            issues = op.repository(owner=owner, name=name).issues(last=40, before=request.args['cursor'])
+            issues = op.repository(owner=owner, name=name).issues(last=ITEMS_PER_REQUEST, before=request.args['cursor'])
         else:
-            issues = op.repository(owner=owner, name=name).issues(first=40, after=request.args['cursor'])
+            issues = op.repository(owner=owner, name=name).issues(first=ITEMS_PER_REQUEST, after=request.args['cursor'])
     else:
-        issues = op.repository(owner=owner, name=name).issues(first=40)
+        issues = op.repository(owner=owner, name=name).issues(first=ITEMS_PER_REQUEST)
 
     # Call the endpoint
     headers = {
@@ -46,10 +58,10 @@ def gh_issues(owner, name):
 
     # convert to Python objects
     repo = (op + data).repository
-    for issue in repo.issues.nodes:
-        print(issue)
+    #for issue in repo.issues.nodes:
+    #    print(issue)
 
-    print(repo.issues.page_info)
+    #print(repo.issues.page_info)
 
 # REST request--let's not use this now
 #    gh_issues_req = requests.get(
