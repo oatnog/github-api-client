@@ -1,0 +1,9 @@
+[build]
+builder = "nixpacks"
+buildCommand = "echo building!"
+
+[deploy]
+startCommand = "gunicorn --worker-class gthread --bind :$PORT --workers 2 --threads 8 --timeout 0 app:app"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "never"
