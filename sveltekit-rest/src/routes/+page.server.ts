@@ -8,9 +8,6 @@ const issues = await octokit.request('GET /repos/{owner}/{repo}/issues', {
 	repo: 'kit'
 });
 
-//console.log(issues.headers['link'])
-
-// console.log(firstIssues)
 
 export async function load({ params }) {
 	return {

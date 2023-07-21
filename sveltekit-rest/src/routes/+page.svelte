@@ -1,14 +1,28 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	export let data: PageData;
+
+	import {enhance} from '$app/forms';
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-
+<h1>Open Issues</h1>
+<!-- <form method="POST" use:enhance>
+	<label>
+		github.com/
+		<input
+			name="organization"
+			autocomplete="off"
+			autocapitalize="off"
+			value="sveltejs"
+		/>
+	</label>
+	<select>
+		<option>kit</option>
+	</select>
+</form> -->
 <ul>
 	{#each data.issues.data as issue}
-		<li><a href={issue.html_url}>{issue.title}</a></li>
+		<li>{issue.number} <a href={issue.html_url}>{issue.title}</a></li>
 	{/each}
 </ul>
-{data.issues.headers.link}
+TODO: Infinite Scroll {data.issues.headers.link}
