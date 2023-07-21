@@ -24,11 +24,8 @@ app = Flask(__name__)
 def gh_issues(owner, name):
     GH_API_TOKEN = getenv('GH_API_TOKEN')
     if not GH_API_TOKEN:
-        return render_template(
-            'issues.html',
-            owner=owner,
-            repo=name,
-        )
+        print('No Github API token')
+        return f'<h1>Unable to access Github {owner}/{name}. No GH API token.</h1>'
 
     op = Operation(ghschema.Query)
     if 'cursor' in request.args:
@@ -45,11 +42,6 @@ def gh_issues(owner, name):
         issues = op.repository(owner=owner, name=name).issues(
             first=ITEMS_PER_REQUEST
         )
-
-    headers = {
-        'Authorization': f'Bearer {GH_API_TOKEN}',
-        'Accept': 'application/vnd.github+json',
-    }
 
     issues.nodes.number()
     issues.nodes.title()
@@ -76,11 +68,27 @@ def gh_issues(owner, name):
     print(issues)
 
     # Call the endpoint
-    endpoint = RequestsEndpoint('https://api.github.com/graphql', headers)
-    data = endpoint(op)
+    headers = {
+        'Authorization': f'Bearer {GH_API_TOKEN}',
+        'Accept': 'application/vnd.github+json',
+    }
 
-    # convert to Python objects
-    repo = (op + data).repository
+    try:
+        endpoint = RequestsEndpoint('https://api.github.com/graphql', headers)
+        data = endpoint(op)
+
+        # convert to Python objects
+        repo = (op + data).repository
+
+        return render_template(
+            'issues.html',
+            owner=owner,
+            repo=name,
+            issues=repo.issues.nodes,
+            page_info=repo.issues.page_info,
+        )
+    except:
+        return f'<h1>Unable to access Github {owner}/{name}: {[error["message"] for error in data["errors"]]}</h1>'
 
     # Rest Api (earlier iteration. Now using GraphQL)
     #    gh_issues_req = requests.get(
@@ -90,11 +98,3 @@ def gh_issues(owner, name):
     #            'Accept': 'application/vnd.github+json',
     #        },
     #    )
-
-    return render_template(
-        'issues.html',
-        owner=owner,
-        repo=name,
-        issues=repo.issues.nodes,
-        page_info=repo.issues.page_info,
-    )
